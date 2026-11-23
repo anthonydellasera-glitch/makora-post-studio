@@ -73,104 +73,148 @@
     background: var(--bg);
     color: var(--ink);
     font-family: var(--font-body);
-    font-size: 15px;
+    font-size: 14px;
     line-height: 1.45;
-    padding-block: 20px 32px;
-    padding-left: max(16px, env(safe-area-inset-left, 0px));
-    padding-right: max(16px, env(safe-area-inset-right, 0px));
+    margin: 0;
+    padding: 0;
   }
-  .app { max-width: 1120px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
-  .makora-nav {
-    background: #FFFFFF;
-    border: 1px solid #D5E2E8;
-    border-radius: 16px;
-    padding: 12px 20px;
+  .app {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+  .brand {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 16px;
-    flex-wrap: wrap;
-    box-shadow: 0 6px 20px rgba(1, 35, 69, 0.05);
+    padding-bottom: 12px;
+    border-bottom: 1px solid #E5EEF2;
+    gap: 10px;
   }
-  .makora-nav-brand {
+  .brand img { height: 40px; width: auto; display: block; }
+  .nav-pills {
     display: flex;
-    align-items: center;
-    gap: 12px;
-    text-decoration: none;
-  }
-  .makora-nav-brand img { height: 34px; width: auto; display: block; }
-  .makora-nav-links {
-    display: flex;
-    align-items: center;
-    gap: 8px;
+    gap: 6px;
     flex-wrap: wrap;
   }
-  .makora-nav-link {
+  .nav-pill {
     font-family: var(--font-display);
-    font-weight: 600;
-    font-size: 13.5px;
-    text-decoration: none;
-    padding: 8px 16px;
+    font-weight: 700;
+    font-size: 11.5px;
+    padding: 5px 11px;
     border-radius: 999px;
-    color: #012345;
+    text-decoration: none;
     background: #F2F8F7;
-    transition: background 0.15s, color 0.15s;
+    color: #012345;
   }
-  .makora-nav-link:hover { background: #DFF5ED; }
-  .makora-nav-link.active {
+  .nav-pill.active {
     background: #012345;
     color: #10B981;
   }
-  h1 { font-family: var(--font-display); font-size: 1.65rem; line-height: 1.2; font-weight: 800; margin: 0; text-wrap: balance; color: #012345; }
-  .sub { margin: 4px 0 0; color: var(--ink-2); font-size: 0.92rem; }
-  h2 { font-family: var(--font-display); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700; color: #009496; margin: 0 0 12px; }
+  .nav-pill:hover:not(.active) { background: #DFF5ED; }
 
-  .grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; align-items: start; }
-  @media (min-width: 900px) {
-    .grid { grid-template-columns: minmax(0, 1fr) 380px; gap: 20px; }
-    .col-out { position: sticky; top: 16px; }
+  .grid {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
   }
-  .col-in, .col-out { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+  .col-in {
+    background: #FFFFFF;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    border-bottom: 1px solid #D5E2E8;
+  }
+  .col-out {
+    background: #F2F8F7;
+    padding: 22px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .out-inner {
+    width: 100%;
+    max-width: 680px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  @media (min-width: 960px) {
+    body { height: 100vh; overflow: hidden; }
+    .app { height: 100vh; }
+    .grid { flex-direction: row; height: 100vh; overflow: hidden; }
+    .col-in {
+      width: 440px;
+      flex-shrink: 0;
+      height: 100vh;
+      overflow-y: auto;
+      padding: 22px;
+      border-right: 1px solid #D5E2E8;
+      border-bottom: none;
+    }
+    .col-out {
+      flex: 1;
+      height: 100vh;
+      overflow-y: auto;
+      padding: 32px;
+    }
+  }
 
-  .panel { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 18px; box-shadow: 0 6px 18px rgba(1, 35, 69, 0.04); }
-  details.panel > summary { cursor: pointer; font-weight: 600; list-style: none; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .out-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  h1 { font-family: var(--font-display); font-size: 1.35rem; line-height: 1.2; font-weight: 800; margin: 0; color: #012345; }
+  .sub { margin: 2px 0 0; color: var(--ink-2); font-size: 0.85rem; }
+  h2 { font-family: var(--font-display); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700; color: #009496; margin: 0 0 10px; }
+
+  .panel { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 14px; }
+  .col-out .panel { border-radius: 16px; padding: 20px; box-shadow: 0 18px 46px rgba(1, 35, 69, 0.09); border: 1px solid #E1EAEF; }
+  details.panel > summary { cursor: pointer; font-family: var(--font-display); font-weight: 600; font-size: 0.88rem; list-style: none; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
   details.panel > summary::-webkit-details-marker { display: none; }
   details.panel > summary::after { content: "+"; font-family: var(--font-mono); color: var(--ink-2); font-size: 1.1rem; }
   details.panel[open] > summary::after { content: "−"; }
-  details.panel[open] > summary { margin-bottom: 14px; }
+  details.panel[open] > summary { margin-bottom: 12px; }
   summary small { font-weight: 400; color: var(--ink-2); }
 
-  label { display: block; font-size: 0.85rem; font-weight: 500; margin-bottom: 4px; }
+  label { display: block; font-family: var(--font-display); font-size: 12.5px; font-weight: 600; margin-bottom: 5px; color: #012345; }
   input[type=number], input[type=text], select {
     width: 100%; min-width: 0;
-    padding: 8px 10px;
-    border: 1px solid var(--line); border-radius: 8px;
-    background: var(--bg); color: var(--ink);
-    font: inherit; font-family: var(--font-mono); font-size: 0.95rem;
+    padding: 9px 12px;
+    border: 1.5px solid var(--line); border-radius: 10px;
+    background: #FFFFFF; color: var(--ink);
+    font: inherit; font-family: var(--font-mono); font-size: 0.92rem;
   }
   input[type=text] { font-family: var(--font-body); }
   select { font-family: var(--font-body); }
+  input:focus, select:focus { outline: none; border-color: #10B981; }
   input:focus-visible, select:focus-visible, button:focus-visible, summary:focus-visible, .drop:focus-within {
-    outline: 2px solid var(--accent); outline-offset: 2px;
+    outline: 2px solid #10B981; outline-offset: 2px;
   }
-  .hint { font-size: 0.78rem; color: var(--ink-2); margin: 4px 0 0; }
-  .fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; }
-  .fields + .fields { margin-top: 12px; }
+  .hint { font-size: 0.76rem; color: var(--ink-2); margin: 4px 0 0; }
+  .fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; }
+  .fields + .fields { margin-top: 10px; }
   .span-all { grid-column: 1 / -1; }
 
-  /* Zona de carga */
+  /* Zona de carga estilo Post Studio */
   .drop {
-    display: flex; align-items: center; gap: 14px;
-    border: 1.5px dashed var(--line); border-radius: 10px;
-    padding: 18px; cursor: pointer; background: var(--bg);
+    display: flex; align-items: center; gap: 12px;
+    border: 2px dashed #10B981; border-radius: 14px;
+    padding: 14px; cursor: pointer; background: #F2F8F7;
+    transition: background 0.15s;
   }
-  .drop.over { border-color: var(--accent); background: var(--accent-soft); }
-  .drop svg { flex: none; width: 34px; height: 34px; color: var(--accent); }
-  .drop strong { display: block; font-weight: 600; }
-  .drop span { color: var(--ink-2); font-size: 0.85rem; }
+  .drop:hover, .drop.over { background: #DFF5ED; }
+  .drop svg { flex: none; width: 30px; height: 30px; color: #009496; }
+  .drop strong { display: block; font-family: var(--font-display); font-weight: 700; font-size: 13px; color: #012345; }
+  .drop span { color: var(--ink-2); font-size: 12px; }
   .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
-  .estado { margin-top: 12px; padding: 10px 12px; border-radius: 8px; font-size: 0.88rem; background: var(--surface-2); }
+  .estado { margin-top: 10px; padding: 10px 12px; border-radius: 10px; font-size: 0.84rem; background: var(--surface-2); }
   .estado.ok { background: var(--ok-soft); color: var(--ok); }
   .estado.warn { background: var(--warn-soft); color: var(--warn); }
   .estado.bad { background: var(--bad-soft); color: var(--bad); }
@@ -220,22 +264,15 @@
 </style>
 
 <div class="app">
-  <nav class="makora-nav" aria-label="Secciones de Makora">
-    <a class="makora-nav-brand" href="/">
-      <img src="/plantillas/assets/logo-horizontal.png" alt="Makora">
-    </a>
-    <div class="makora-nav-links">
-      <a class="makora-nav-link" href="/">Post Studio</a>
-      <a class="makora-nav-link active" href="/calculadora">Calculadora 3D</a>
-    </div>
-  </nav>
-  <header>
-    <h1>Calculadora de Costos de Impresión 3D</h1>
-    <p class="sub">Makora · Bambu Lab A1 · precios en USD</p>
-  </header>
-
   <div class="grid">
     <div class="col-in">
+      <div class="brand">
+        <img src="/plantillas/assets/logo-horizontal.png" alt="Makora">
+        <div class="nav-pills">
+          <a class="nav-pill" href="/">Post Studio</a>
+          <a class="nav-pill active" href="/calculadora">Calculadora 3D</a>
+        </div>
+      </div>
 
       <section class="panel" aria-labelledby="t-archivo">
         <h2 id="t-archivo">Archivo de la pieza</h2>
@@ -330,7 +367,14 @@
     </div>
 
     <aside class="col-out">
-      <section class="panel" aria-labelledby="t-res">
+      <div class="out-inner">
+        <div class="out-header">
+          <div>
+            <h1>Calculadora de Costos de Impresión 3D</h1>
+            <p class="sub">Makora · Bambu Lab A1 · precios en USD</p>
+          </div>
+        </div>
+        <section class="panel" aria-labelledby="t-res">
         <h2 id="t-res">Ficha de costos</h2>
         <dl class="ficha-list">
           <div class="r"><dt>Material</dt><dd id="costoMaterial">$0.00</dd></div>
@@ -354,6 +398,7 @@
         <textarea id="cotizacion" readonly aria-label="Texto de la cotización"></textarea>
         <button type="button" class="btn" id="copiar">Copiar texto</button><span class="copiado" id="copiado" role="status" aria-live="polite"></span>
       </section>
+      </div>
     </aside>
   </div>
 </div>
