@@ -1,0 +1,741 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Calculadora de Costos de Impresión 3D</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Open+Sans:wght@400;600;700&family=Poppins:wght@600;700;800&display=swap">
+<style>
+  /* Layout: entradas a la izquierda, ficha de costos fija a la derecha; una columna en el teléfono */
+  :root {
+    --bg: #F2F8F7;
+    --surface: #FFFFFF;
+    --surface-2: #E8F3F1;
+    --ink: #012345;
+    --ink-2: #4B5B6B;
+    --line: #D5E2E8;
+    --accent: #012345;
+    --accent-ink: #FFFFFF;
+    --accent-soft: #DFF5ED;
+    --makora-green: #10B981;
+    --makora-teal: #009496;
+    --makora-sol: #FFB020;
+    --ok: #009496;
+    --ok-soft: #DFF5ED;
+    --warn: #85560a;
+    --warn-soft: #FFF4DC;
+    --bad: #b3261e;
+    --bad-soft: #fbe3e0;
+    --font-display: 'Poppins', system-ui, -apple-system, sans-serif;
+    --font-body: 'Open Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    --font-mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #12141c;
+      --surface: #1b1e29;
+      --surface-2: #252937;
+      --ink: #eceef6;
+      --ink-2: #a3a9be;
+      --line: #32374a;
+      --accent: #8e9cff;
+      --accent-ink: #10132a;
+      --accent-soft: #252b52;
+      --ok: #5fd09a;
+      --ok-soft: #173a2b;
+      --warn: #f0c15a;
+      --warn-soft: #3c2f10;
+      --bad: #ff8a80;
+      --bad-soft: #41201d;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #12141c;
+    --surface: #1b1e29;
+    --surface-2: #252937;
+    --ink: #eceef6;
+    --ink-2: #a3a9be;
+    --line: #32374a;
+    --accent: #8e9cff;
+    --accent-ink: #10132a;
+    --accent-soft: #252b52;
+    --ok: #5fd09a;
+    --ok-soft: #173a2b;
+    --warn: #f0c15a;
+    --warn-soft: #3c2f10;
+    --bad: #ff8a80;
+    --bad-soft: #41201d;
+    color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 15px;
+    line-height: 1.45;
+    padding-block: 20px 32px;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+  }
+  .app { max-width: 1120px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
+  .makora-nav {
+    background: #FFFFFF;
+    border: 1px solid #D5E2E8;
+    border-radius: 16px;
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    box-shadow: 0 6px 20px rgba(1, 35, 69, 0.05);
+  }
+  .makora-nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+  }
+  .makora-nav-brand img { height: 34px; width: auto; display: block; }
+  .makora-nav-links {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .makora-nav-link {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 13.5px;
+    text-decoration: none;
+    padding: 8px 16px;
+    border-radius: 999px;
+    color: #012345;
+    background: #F2F8F7;
+    transition: background 0.15s, color 0.15s;
+  }
+  .makora-nav-link:hover { background: #DFF5ED; }
+  .makora-nav-link.active {
+    background: #012345;
+    color: #10B981;
+  }
+  h1 { font-family: var(--font-display); font-size: 1.65rem; line-height: 1.2; font-weight: 800; margin: 0; text-wrap: balance; color: #012345; }
+  .sub { margin: 4px 0 0; color: var(--ink-2); font-size: 0.92rem; }
+  h2 { font-family: var(--font-display); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700; color: #009496; margin: 0 0 12px; }
+
+  .grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; align-items: start; }
+  @media (min-width: 900px) {
+    .grid { grid-template-columns: minmax(0, 1fr) 380px; gap: 20px; }
+    .col-out { position: sticky; top: 16px; }
+  }
+  .col-in, .col-out { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+
+  .panel { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 18px; box-shadow: 0 6px 18px rgba(1, 35, 69, 0.04); }
+  details.panel > summary { cursor: pointer; font-weight: 600; list-style: none; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  details.panel > summary::-webkit-details-marker { display: none; }
+  details.panel > summary::after { content: "+"; font-family: var(--font-mono); color: var(--ink-2); font-size: 1.1rem; }
+  details.panel[open] > summary::after { content: "−"; }
+  details.panel[open] > summary { margin-bottom: 14px; }
+  summary small { font-weight: 400; color: var(--ink-2); }
+
+  label { display: block; font-size: 0.85rem; font-weight: 500; margin-bottom: 4px; }
+  input[type=number], input[type=text], select {
+    width: 100%; min-width: 0;
+    padding: 8px 10px;
+    border: 1px solid var(--line); border-radius: 8px;
+    background: var(--bg); color: var(--ink);
+    font: inherit; font-family: var(--font-mono); font-size: 0.95rem;
+  }
+  input[type=text] { font-family: var(--font-body); }
+  select { font-family: var(--font-body); }
+  input:focus-visible, select:focus-visible, button:focus-visible, summary:focus-visible, .drop:focus-within {
+    outline: 2px solid var(--accent); outline-offset: 2px;
+  }
+  .hint { font-size: 0.78rem; color: var(--ink-2); margin: 4px 0 0; }
+  .fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; }
+  .fields + .fields { margin-top: 12px; }
+  .span-all { grid-column: 1 / -1; }
+
+  /* Zona de carga */
+  .drop {
+    display: flex; align-items: center; gap: 14px;
+    border: 1.5px dashed var(--line); border-radius: 10px;
+    padding: 18px; cursor: pointer; background: var(--bg);
+  }
+  .drop.over { border-color: var(--accent); background: var(--accent-soft); }
+  .drop svg { flex: none; width: 34px; height: 34px; color: var(--accent); }
+  .drop strong { display: block; font-weight: 600; }
+  .drop span { color: var(--ink-2); font-size: 0.85rem; }
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+  .estado { margin-top: 12px; padding: 10px 12px; border-radius: 8px; font-size: 0.88rem; background: var(--surface-2); }
+  .estado.ok { background: var(--ok-soft); color: var(--ok); }
+  .estado.warn { background: var(--warn-soft); color: var(--warn); }
+  .estado.bad { background: var(--bad-soft); color: var(--bad); }
+  .estado strong { display: block; font-weight: 600; }
+  .estado p { margin: 4px 0 0; }
+  .chips { list-style: none; margin: 8px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+  .chips li { font-family: var(--font-mono); font-size: 0.78rem; padding: 2px 8px; border-radius: 999px; background: var(--surface); color: var(--ink); border: 1px solid var(--line); }
+  .placa-row { margin-top: 12px; }
+
+  .presets { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .presets button {
+    font: inherit; font-size: 0.82rem; padding: 4px 10px; border-radius: 999px;
+    border: 1px solid var(--line); background: var(--bg); color: var(--ink); cursor: pointer;
+  }
+  .presets button:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* Ficha de costos */
+  .ficha-list { margin: 0; }
+  .ficha-list .r { display: flex; justify-content: space-between; gap: 12px; padding: 7px 0; border-bottom: 1px solid var(--line); }
+  .ficha-list dt { color: var(--ink-2); }
+  .ficha-list dd { margin: 0; font-family: var(--font-mono); font-variant-numeric: tabular-nums; text-align: right; }
+  .ficha-list .r.sum dt { color: var(--ink); font-weight: 600; }
+  .ficha-list .r.sum dd { font-weight: 500; }
+  .total {
+    margin-top: 14px; border-radius: 10px; background: var(--accent); color: var(--accent-ink);
+    padding: 14px 16px; display: flex; flex-direction: column; gap: 10px;
+  }
+  .total .line { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+  .total .lbl { font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; }
+  .total .val { font-family: var(--font-mono); font-variant-numeric: tabular-nums; font-weight: 500; }
+  .total .unit .val { font-size: 1.9rem; line-height: 1.1; }
+  .total .all .val { font-size: 1.15rem; }
+  .total .all { border-top: 1px solid color-mix(in srgb, var(--accent-ink) 30%, transparent); padding-top: 10px; }
+  .minimo-note { font-size: 0.78rem; margin: 0; opacity: 0.9; }
+
+  textarea {
+    width: 100%; min-height: 150px; resize: vertical;
+    padding: 10px; border: 1px solid var(--line); border-radius: 8px;
+    background: var(--bg); color: var(--ink); font-family: var(--font-mono); font-size: 0.85rem; line-height: 1.5;
+  }
+  .btn {
+    margin-top: 10px; font-family: var(--font-display); font-weight: 700; padding: 10px 18px; border-radius: 999px; cursor: pointer;
+    border: none; background: #10B981; color: #012345;
+  }
+  .btn:hover { opacity: 0.9; }
+  .copiado { margin-left: 10px; font-size: 0.85rem; color: var(--ok); }
+</style>
+
+<div class="app">
+  <nav class="makora-nav" aria-label="Secciones de Makora">
+    <a class="makora-nav-brand" href="/">
+      <img src="/plantillas/assets/logo-horizontal.png" alt="Makora">
+    </a>
+    <div class="makora-nav-links">
+      <a class="makora-nav-link" href="/">Post Studio</a>
+      <a class="makora-nav-link active" href="/calculadora">Calculadora 3D</a>
+    </div>
+  </nav>
+  <header>
+    <h1>Calculadora de Costos de Impresión 3D</h1>
+    <p class="sub">Makora · Bambu Lab A1 · precios en USD</p>
+  </header>
+
+  <div class="grid">
+    <div class="col-in">
+
+      <section class="panel" aria-labelledby="t-archivo">
+        <h2 id="t-archivo">Archivo de la pieza</h2>
+        <label class="drop" id="drop" for="archivo">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4"/><path d="M7 9l5-5 5 5"/><path d="M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></svg>
+          <div>
+            <strong>Suelta el archivo aquí o toca para elegirlo</strong>
+            <span>.gcode.3mf (tiempo y gramos exactos) · .stl (estimado) · .gcode</span>
+          </div>
+        </label>
+        <input type="file" id="archivo" class="sr-only" accept=".3mf,.gcode,.stl">
+        <p class="hint">En Bambu Studio: Archivo → Exportar → Exportar placa laminada (.gcode.3mf).</p>
+        <div class="estado" id="estado" role="status" aria-live="polite">
+          <strong>Valores de ejemplo</strong>
+          <p>4 h y 40 g. Sube un archivo para usar los de tu pieza.</p>
+        </div>
+        <div class="placa-row" id="placaRow" hidden>
+          <label for="placa">Placa del archivo</label>
+          <select id="placa"></select>
+        </div>
+      </section>
+
+      <section class="panel" aria-labelledby="t-pedido">
+        <h2 id="t-pedido">Pedido</h2>
+        <div class="fields">
+          <div class="span-all"><label for="cliente">Cliente</label><input type="text" id="cliente" placeholder="Nombre del cliente"></div>
+          <div class="span-all"><label for="descripcion">Descripción de la pieza</label><input type="text" id="descripcion" placeholder="Ej. Llavero con logo"></div>
+          <div>
+            <label for="piezas">Piezas en el archivo</label>
+            <input type="number" id="piezas" value="1" min="1" step="1">
+            <p class="hint">Cuántas salen de esta impresión.</p>
+          </div>
+          <div>
+            <label for="cantidad">Cantidad pedida</label>
+            <input type="number" id="cantidad" value="1" min="1" step="1">
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" aria-labelledby="t-var">
+        <h2 id="t-var">Costos variables de la impresión</h2>
+        <div class="fields">
+          <div><label for="horas">Horas</label><input type="number" id="horas" value="4" min="0"></div>
+          <div><label for="minutos">Minutos</label><input type="number" id="minutos" value="0" min="0" max="59"></div>
+          <div><label for="gramos">Gramos de filamento</label><input type="number" id="gramos" value="40" step="0.1" min="0"></div>
+          <div><label for="insumos">Insumos por pieza (USD)</label><input type="number" id="insumos" value="0" step="0.01" min="0"></div>
+        </div>
+      </section>
+
+      <section class="panel" aria-labelledby="t-gan">
+        <h2 id="t-gan">Ganancia</h2>
+        <div class="fields">
+          <div>
+            <label for="margenGanancia">Margen (multiplicador)</label>
+            <input type="number" id="margenGanancia" value="5" step="0.1" min="1">
+          </div>
+          <div>
+            <label for="precioMinimo">Precio mínimo por pieza (USD)</label>
+            <input type="number" id="precioMinimo" value="0" step="0.01" min="0">
+            <p class="hint">0 = sin mínimo.</p>
+          </div>
+        </div>
+        <div class="presets" role="group" aria-label="Márgenes habituales">
+          <button type="button" data-m="5">Llaveros ×5</button>
+          <button type="button" data-m="4">Minorista ×4</button>
+          <button type="button" data-m="3">Mayorista ×3</button>
+        </div>
+      </section>
+
+      <details class="panel">
+        <summary><span>Costos fijos <small>· se guardan en este navegador</small></span></summary>
+        <div class="fields">
+          <div><label for="precioKg">Filamento por kg (USD)</label><input type="number" id="precioKg" value="25" step="0.01"></div>
+          <div><label for="precioKwh">Precio kWh (USD)</label><input type="number" id="precioKwh" value="0.26168" step="0.00001"></div>
+          <div><label for="consumoW">Consumo por hora (W)</label><input type="number" id="consumoW" value="140"></div>
+          <div><label for="desgasteHoras">Vida útil de la máquina (h)</label><input type="number" id="desgasteHoras" value="4320"></div>
+          <div><label for="precioRepuestos">Repuestos (USD)</label><input type="number" id="precioRepuestos" value="100" step="0.01"></div>
+          <div><label for="margenError">Margen de error (%)</label><input type="number" id="margenError" value="30"></div>
+        </div>
+      </details>
+
+      <details class="panel">
+        <summary><span>Ajustes del estimador de STL <small>· solo para archivos sin laminar</small></span></summary>
+        <div class="fields">
+          <div><label for="infill">Relleno (%)</label><input type="number" id="infill" value="15" min="0" max="100"></div>
+          <div><label for="densidad">Densidad (g/cm³)</label><input type="number" id="densidad" value="1.24" step="0.01"></div>
+          <div><label for="cascara">Espesor de paredes (mm)</label><input type="number" id="cascara" value="1.2" step="0.1"></div>
+          <div><label for="caudal">Caudal efectivo (mm³/s)</label><input type="number" id="caudal" value="3" step="0.1"></div>
+        </div>
+        <p class="hint">Calibra el caudal comparando el tiempo estimado con el tiempo real de tus impresiones en la A1.</p>
+      </details>
+    </div>
+
+    <aside class="col-out">
+      <section class="panel" aria-labelledby="t-res">
+        <h2 id="t-res">Ficha de costos</h2>
+        <dl class="ficha-list">
+          <div class="r"><dt>Material</dt><dd id="costoMaterial">$0.00</dd></div>
+          <div class="r"><dt>Electricidad</dt><dd id="costoLuz">$0.00</dd></div>
+          <div class="r"><dt>Desgaste</dt><dd id="costoDesgaste">$0.00</dd></div>
+          <div class="r"><dt>Margen de error</dt><dd id="costoError">$0.00</dd></div>
+          <div class="r sum"><dt>Costo de la impresión</dt><dd id="subtotal">$0.00</dd></div>
+          <div class="r"><dt>Con margen</dt><dd id="conMargen">$0.00</dd></div>
+          <div class="r"><dt>Costo por pieza</dt><dd id="costoPieza">$0.00</dd></div>
+          <div class="r"><dt>Ganancia por pieza</dt><dd id="gananciaPieza">$0.00</dd></div>
+        </dl>
+        <div class="total">
+          <div class="line unit"><span class="lbl">Precio por pieza</span><span class="val" id="precioUnit">$0.00</span></div>
+          <p class="minimo-note" id="minimoNote" hidden>Se aplicó el precio mínimo.</p>
+          <div class="line all"><span class="lbl">Total del pedido</span><span class="val" id="totalCobrar">$0.00</span></div>
+        </div>
+      </section>
+
+      <section class="panel" aria-labelledby="t-cot">
+        <h2 id="t-cot">Texto para el cliente</h2>
+        <textarea id="cotizacion" readonly aria-label="Texto de la cotización"></textarea>
+        <button type="button" class="btn" id="copiar">Copiar texto</button><span class="copiado" id="copiado" role="status" aria-live="polite"></span>
+      </section>
+    </aside>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script>
+(function () {
+  'use strict';
+  var $ = function (id) { return document.getElementById(id); };
+  var KEY = 'makora-cotizador-v1';
+  var GUARDAR = ['precioKg', 'precioKwh', 'consumoW', 'desgasteHoras', 'precioRepuestos', 'margenError',
+                 'margenGanancia', 'precioMinimo', 'infill', 'densidad', 'cascara', 'caudal'];
+  var ENTRADAS = GUARDAR.concat(['horas', 'minutos', 'gramos', 'insumos', 'piezas', 'cantidad', 'cliente', 'descripcion']);
+  var MODELOS = { 'N2S': 'A1', 'N1': 'A1 mini', 'C11': 'P1P', 'C12': 'P1S', 'BL-P001': 'X1 Carbon' };
+  var BED = 256;
+
+  var placas = [];
+  var ultimoSTL = null;
+  var descAuto = '';
+
+  /* ---------- utilidades ---------- */
+  function el(tag, cls, text) {
+    var n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (text !== undefined) n.textContent = text;
+    return n;
+  }
+  function num(id, def) {
+    var v = parseFloat($(id).value);
+    return isFinite(v) ? v : (def === undefined ? 0 : def);
+  }
+  function usd(v) { return '$' + (isFinite(v) ? v : 0).toFixed(2); }
+  function fmtDur(seg) {
+    var m = Math.round(seg / 60), h = Math.floor(m / 60);
+    return h + ' h ' + (m % 60) + ' min';
+  }
+  function suma(lista, campo) { return lista.reduce(function (a, p) { return a + (p[campo] || 0); }, 0); }
+  function parseDur(s) {
+    var t = 0, re = /(\d+(?:\.\d+)?)\s*([dhms])\b/gi, m;
+    while ((m = re.exec(s)) !== null) {
+      var v = parseFloat(m[1]), u = m[2].toLowerCase();
+      t += u === 'd' ? v * 86400 : u === 'h' ? v * 3600 : u === 'm' ? v * 60 : v;
+    }
+    return t;
+  }
+  function sumaLista(s) {
+    return String(s).split(/[,\s]+/).map(parseFloat).filter(isFinite).reduce(function (a, b) { return a + b; }, 0);
+  }
+
+  /* ---------- guardado local ---------- */
+  function cargarGuardado() {
+    try {
+      var j = JSON.parse(localStorage.getItem(KEY) || '{}');
+      GUARDAR.forEach(function (id) { if (j[id] !== undefined && $(id)) $(id).value = j[id]; });
+    } catch (e) { /* sin almacenamiento: se usan los valores por defecto */ }
+  }
+  function guardar() {
+    try {
+      var o = {};
+      GUARDAR.forEach(function (id) { o[id] = $(id).value; });
+      localStorage.setItem(KEY, JSON.stringify(o));
+    } catch (e) { /* ignorar */ }
+  }
+
+  /* ---------- estado del archivo ---------- */
+  function estado(tipo, titulo, texto, chips) {
+    var box = $('estado');
+    box.className = 'estado' + (tipo ? ' ' + tipo : '');
+    box.replaceChildren();
+    box.append(el('strong', '', titulo));
+    if (texto) box.append(el('p', '', texto));
+    if (chips && chips.length) {
+      var ul = el('ul', 'chips');
+      chips.forEach(function (c) { ul.append(el('li', '', c)); });
+      box.append(ul);
+    }
+  }
+
+  /* ---------- lectura de .3mf / .gcode ---------- */
+  function leerSliceInfo(xml) {
+    var doc = new DOMParser().parseFromString(xml, 'application/xml');
+    return Array.prototype.slice.call(doc.querySelectorAll('plate')).map(function (p, i) {
+      var meta = {};
+      Array.prototype.forEach.call(p.children, function (c) {
+        if (c.tagName === 'metadata') meta[c.getAttribute('key')] = c.getAttribute('value');
+      });
+      var fil = Array.prototype.slice.call(p.querySelectorAll('filament')).map(function (f) {
+        return { tipo: f.getAttribute('type') || '', g: parseFloat(f.getAttribute('used_g')) || 0 };
+      });
+      var objs = Array.prototype.slice.call(p.querySelectorAll('object')).filter(function (o) {
+        return o.getAttribute('skipped') !== 'true';
+      });
+      var g = parseFloat(meta.weight);
+      if (!isFinite(g)) g = fil.reduce(function (a, f) { return a + f.g; }, 0);
+      return {
+        indice: parseInt(meta.index, 10) || i + 1,
+        seg: parseFloat(meta.prediction) || 0,
+        g: g, fil: fil, objs: objs.length,
+        nombre: objs.length ? objs[0].getAttribute('name') : '',
+        modelo: meta.printer_model_id || '',
+        boquilla: meta.nozzle_diameters || '',
+        soportes: meta.support_used === 'true'
+      };
+    }).filter(function (p) { return p.seg > 0 || p.g > 0; });
+  }
+
+  function leerCabeceraGcode(txt) {
+    var seg = 0, g = 0, m;
+    m = txt.match(/;\s*total estimated time:\s*([^\n\r]+)/i) ||
+        txt.match(/;\s*estimated printing time \(normal mode\)\s*=\s*([^\n\r]+)/i);
+    if (m) seg = parseDur(m[1]);
+    m = txt.match(/;\s*total filament weight \[g\]\s*:\s*([^\n\r]+)/i) ||
+        txt.match(/;\s*(?:total )?filament used \[g\]\s*=\s*([^\n\r]+)/i);
+    if (m) g = sumaLista(m[1]);
+    return { seg: seg, g: g };
+  }
+
+  async function leerGcodeArchivo(file) {
+    var head = await file.slice(0, 300000).text();
+    var tail = file.size > 300000 ? await file.slice(Math.max(0, file.size - 300000)).text() : '';
+    var r = leerCabeceraGcode(head + '\n' + tail);
+    if (!(r.seg > 0 || r.g > 0)) throw new Error('No encontré tiempo ni gramos en el encabezado del .gcode.');
+    return { fuente: 'laminado', nombre: file.name.replace(/\.gcode$/i, ''),
+             plates: [{ indice: 1, seg: r.seg, g: r.g, fil: [], objs: 1 }], extra: [] };
+  }
+
+  async function leer3MF(file) {
+    if (typeof JSZip === 'undefined') throw new Error('No se pudo cargar la librería para leer .3mf (sin internet).');
+    var zip = await JSZip.loadAsync(file);
+    var base = file.name.replace(/\.gcode\.3mf$/i, '').replace(/\.3mf$/i, '');
+    var info = zip.file('Metadata/slice_info.config');
+    var lista = [];
+    if (info) lista = leerSliceInfo(await info.async('string'));
+    if (!lista.length) {
+      var gcodes = zip.file(/^Metadata\/plate_\d+\.gcode$/i);
+      for (var i = 0; i < gcodes.length; i++) {
+        var txt = await gcodes[i].async('string');
+        var r = leerCabeceraGcode(txt.slice(0, 300000) + '\n' + txt.slice(-300000));
+        if (r.seg > 0 || r.g > 0) {
+          lista.push({ indice: parseInt((gcodes[i].name.match(/plate_(\d+)/i) || [0, i + 1])[1], 10),
+                       seg: r.seg, g: r.g, fil: [], objs: 1 });
+        }
+      }
+    }
+    if (!lista.length) {
+      throw new Error('Este 3MF no está laminado. Lamínalo en Bambu Studio con el perfil de la A1 y exporta la placa laminada (.gcode.3mf).');
+    }
+    var extra = [];
+    var p0 = lista[0];
+    if (p0.modelo) extra.push('Impresora: ' + (MODELOS[p0.modelo] || p0.modelo));
+    if (p0.boquilla) extra.push('Boquilla ' + p0.boquilla + ' mm');
+    var tipos = {};
+    lista.forEach(function (p) { p.fil.forEach(function (f) { if (f.tipo) tipos[f.tipo] = (tipos[f.tipo] || 0) + f.g; }); });
+    Object.keys(tipos).forEach(function (t) { extra.push(t + ' ' + tipos[t].toFixed(1) + ' g'); });
+    if (lista.some(function (p) { return p.soportes; })) extra.push('Con soportes');
+    return { fuente: 'laminado', nombre: (p0.nombre && lista.length === 1 && p0.objs === 1) ? p0.nombre : base, plates: lista, extra: extra };
+  }
+
+  /* ---------- lectura de STL (estimado) ---------- */
+  function metricasMalla(tri) {
+    var vol = 0, area = 0;
+    var mn = [Infinity, Infinity, Infinity], mx = [-Infinity, -Infinity, -Infinity];
+    for (var i = 0; i < tri.length; i += 9) {
+      var ax = tri[i], ay = tri[i + 1], az = tri[i + 2];
+      var bx = tri[i + 3], by = tri[i + 4], bz = tri[i + 5];
+      var cx = tri[i + 6], cy = tri[i + 7], cz = tri[i + 8];
+      vol += (ax * (by * cz - bz * cy) - ay * (bx * cz - bz * cx) + az * (bx * cy - by * cx)) / 6;
+      var ux = bx - ax, uy = by - ay, uz = bz - az, vx = cx - ax, vy = cy - ay, vz = cz - az;
+      var nx = uy * vz - uz * vy, ny = uz * vx - ux * vz, nz = ux * vy - uy * vx;
+      area += Math.sqrt(nx * nx + ny * ny + nz * nz) / 2;
+      for (var k = 0; k < 9; k += 3) {
+        for (var d = 0; d < 3; d++) {
+          var v = tri[i + k + d];
+          if (v < mn[d]) mn[d] = v;
+          if (v > mx[d]) mx[d] = v;
+        }
+      }
+    }
+    return { vol: Math.abs(vol), area: area, dim: [mx[0] - mn[0], mx[1] - mn[1], mx[2] - mn[2]], n: tri.length / 9 };
+  }
+
+  async function leerSTL(file) {
+    var buf = await file.arrayBuffer();
+    var tri;
+    var dv = new DataView(buf);
+    var esBinario = false;
+    if (buf.byteLength >= 84) {
+      var n = dv.getUint32(80, true);
+      esBinario = buf.byteLength === 84 + 50 * n;
+    }
+    if (esBinario) {
+      var n2 = dv.getUint32(80, true);
+      tri = new Float64Array(n2 * 9);
+      for (var i = 0; i < n2; i++) {
+        var o = 84 + i * 50 + 12;
+        for (var j = 0; j < 9; j++) tri[i * 9 + j] = dv.getFloat32(o + j * 4, true);
+      }
+    } else {
+      var txt = new TextDecoder().decode(buf);
+      var re = /vertex\s+([-+0-9.eE]+)\s+([-+0-9.eE]+)\s+([-+0-9.eE]+)/g, m, arr = [];
+      while ((m = re.exec(txt)) !== null) arr.push(parseFloat(m[1]), parseFloat(m[2]), parseFloat(m[3]));
+      if (arr.length < 9) throw new Error('No pude leer triángulos en el STL.');
+      tri = Float64Array.from(arr.slice(0, arr.length - (arr.length % 9)));
+    }
+    ultimoSTL = metricasMalla(tri);
+    var r = estimarSTL();
+    var avisos = [];
+    var d = ultimoSTL.dim;
+    if (Math.max(d[0], d[1]) > BED || d[2] > BED) avisos.push('Mide ' + d.map(function (x) { return x.toFixed(0); }).join(' × ') + ' mm: no cabe en la cama de la A1 (256 mm).');
+    return { fuente: 'estimado', nombre: file.name.replace(/\.stl$/i, ''), plates: [r], extra: [
+      'Volumen ' + (ultimoSTL.vol / 1000).toFixed(1) + ' cm³',
+      d.map(function (x) { return x.toFixed(0); }).join(' × ') + ' mm'
+    ], avisos: avisos };
+  }
+
+  function estimarSTL() {
+    var s = ultimoSTL;
+    var relleno = Math.min(1, Math.max(0, num('infill', 15) / 100));
+    var dens = num('densidad', 1.24), cascara = num('cascara', 1.2), caudal = Math.max(0.1, num('caudal', 3));
+    var capa = Math.min(s.vol, s.area * cascara);
+    var vFil = capa + (s.vol - capa) * relleno;
+    return { indice: 1, seg: vFil / caudal, g: vFil / 1000 * dens, fil: [], objs: 1 };
+  }
+
+  /* ---------- aplicar al formulario ---------- */
+  function aplicarSeleccion() {
+    var v = $('placa').value;
+    var sel = v === 'todas' || !v ? placas : placas.filter(function (p) { return String(p.indice) === v; });
+    if (!sel.length) return;
+    var seg = suma(sel, 'seg'), g = suma(sel, 'g'), objs = suma(sel, 'objs') || 1;
+    var min = Math.round(seg / 60);
+    $('horas').value = Math.floor(min / 60);
+    $('minutos').value = min % 60;
+    $('gramos').value = Math.round(g * 10) / 10;
+    $('piezas').value = objs;
+    calcular();
+  }
+
+  function mostrar(r) {
+    placas = r.plates;
+    var sel = $('placa');
+    sel.replaceChildren();
+    if (placas.length > 1) {
+      var o = el('option', '', 'Todas las placas (suma)');
+      o.value = 'todas';
+      sel.append(o);
+      placas.forEach(function (p) {
+        var op = el('option', '', 'Placa ' + p.indice + ' · ' + fmtDur(p.seg) + ' · ' + p.g.toFixed(1) + ' g');
+        op.value = String(p.indice);
+        sel.append(op);
+      });
+      $('placaRow').hidden = false;
+    } else {
+      $('placaRow').hidden = true;
+    }
+    var desc = $('descripcion');
+    if (r.nombre && (!desc.value || desc.value === descAuto)) { desc.value = r.nombre; descAuto = r.nombre; }
+
+    var chips = r.extra.slice();
+    chips.unshift(fmtDur(suma(placas, 'seg')) + ' · ' + suma(placas, 'g').toFixed(1) + ' g');
+    if (r.fuente === 'laminado') {
+      estado('ok', 'Archivo laminado leído', 'Tiempo y gramos tomados del laminado. Son los valores que verá la impresora.', chips);
+    } else {
+      var t = (r.avisos && r.avisos.length) ? r.avisos.join(' ') + ' ' : '';
+      estado('warn', 'Estimado desde el STL', t + 'Es aproximado. Para el tiempo exacto, lamina en Bambu Studio y sube el .gcode.3mf.', chips);
+    }
+    aplicarSeleccion();
+  }
+
+  async function procesar(file) {
+    estado('', 'Leyendo ' + file.name + '…');
+    try {
+      var n = file.name.toLowerCase(), r;
+      if (/\.stl$/.test(n)) r = await leerSTL(file);
+      else if (/\.gcode$/.test(n)) r = await leerGcodeArchivo(file);
+      else if (/\.3mf$/.test(n)) r = await leer3MF(file);
+      else throw new Error('Formato no soportado. Usa .gcode.3mf, .gcode o .stl.');
+      mostrar(r);
+    } catch (err) {
+      estado('bad', 'No se pudo leer el archivo', err.message || String(err));
+    }
+  }
+
+  /* ---------- cálculo (misma fórmula de la calculadora original) ---------- */
+  function calcular() {
+    var precioKg = num('precioKg'), precioKwh = num('precioKwh'), consumoW = num('consumoW');
+    var vida = num('desgasteHoras', 1) || 1, repuestos = num('precioRepuestos'), margenError = num('margenError');
+    var h = Math.max(0, num('horas')), m = Math.min(59, Math.max(0, num('minutos')));
+    var g = Math.max(0, num('gramos')), insumos = Math.max(0, num('insumos'));
+    var margen = num('margenGanancia', 1) || 1, minimo = Math.max(0, num('precioMinimo'));
+    var piezas = Math.max(1, Math.round(num('piezas', 1))), cantidad = Math.max(1, Math.round(num('cantidad', 1)));
+    var t = h + m / 60;
+
+    var material = precioKg * (g / 1000);
+    var luz = (consumoW / 1000) * precioKwh * t;
+    var desgaste = (repuestos / vida) * t;
+    var error = (material + luz + desgaste) * (margenError / 100);
+    var subtotal = material + luz + desgaste + error;
+    var conMargen = subtotal * margen;
+    var costoPieza = subtotal / piezas + insumos;
+    var unit = conMargen / piezas + insumos;
+    var usaMin = minimo > 0 && unit < minimo;
+    if (usaMin) unit = minimo;
+    var total = unit * cantidad;
+
+    $('costoMaterial').textContent = usd(material);
+    $('costoLuz').textContent = usd(luz);
+    $('costoDesgaste').textContent = usd(desgaste);
+    $('costoError').textContent = usd(error);
+    $('subtotal').textContent = usd(subtotal);
+    $('conMargen').textContent = usd(conMargen);
+    $('costoPieza').textContent = usd(costoPieza);
+    $('gananciaPieza').textContent = usd(unit - costoPieza);
+    $('precioUnit').textContent = usd(unit);
+    $('totalCobrar').textContent = usd(total);
+    $('minimoNote').hidden = !usaMin;
+
+    var cliente = $('cliente').value.trim(), desc = $('descripcion').value.trim() || 'Pieza impresa en 3D';
+    var lineas = ['Cotización Makora' + (cliente ? ' para ' + cliente : ''),
+                  'Pieza: ' + desc,
+                  'Cantidad: ' + cantidad,
+                  'Precio por pieza: ' + usd(unit),
+                  'Total: ' + usd(total) + ' USD'];
+    $('cotizacion').value = lineas.join('\n');
+  }
+
+  /* ---------- eventos ---------- */
+  ENTRADAS.forEach(function (id) {
+    $(id).addEventListener('input', function () {
+      if (GUARDAR.indexOf(id) !== -1) guardar();
+      if (['infill', 'densidad', 'cascara', 'caudal'].indexOf(id) !== -1 && ultimoSTL && placas.length && placas[0].fil.length === 0 && $('estado').classList.contains('warn')) {
+        placas = [estimarSTL()];
+        aplicarSeleccion();
+        return;
+      }
+      calcular();
+    });
+  });
+  $('minutos').addEventListener('change', function () {
+    $('minutos').value = Math.min(59, Math.max(0, Math.round(num('minutos'))));
+    calcular();
+  });
+  $('placa').addEventListener('change', aplicarSeleccion);
+  Array.prototype.forEach.call(document.querySelectorAll('.presets button'), function (b) {
+    b.addEventListener('click', function () {
+      $('margenGanancia').value = b.getAttribute('data-m');
+      guardar();
+      calcular();
+    });
+  });
+
+  $('archivo').addEventListener('change', function (e) {
+    var f = e.target.files && e.target.files[0];
+    if (f) procesar(f);
+    e.target.value = '';
+  });
+  var drop = $('drop');
+  ['dragenter', 'dragover'].forEach(function (ev) {
+    drop.addEventListener(ev, function (e) { e.preventDefault(); drop.classList.add('over'); });
+  });
+  ['dragleave', 'drop'].forEach(function (ev) {
+    drop.addEventListener(ev, function (e) { e.preventDefault(); drop.classList.remove('over'); });
+  });
+  drop.addEventListener('drop', function (e) {
+    var f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+    if (f) procesar(f);
+  });
+
+  $('copiar').addEventListener('click', function () {
+    var ta = $('cotizacion'), aviso = $('copiado');
+    function ok(t) { aviso.textContent = t; setTimeout(function () { aviso.textContent = ''; }, 2500); }
+    var p;
+    try { p = navigator.clipboard.writeText(ta.value); } catch (e) { p = Promise.reject(e); }
+    p.then(function () { ok('Copiado'); }).catch(function () {
+      ta.focus(); ta.select();
+      ok('Texto seleccionado: cópialo con Ctrl+C');
+    });
+  });
+
+  cargarGuardado();
+  calcular();
+})();
+</script>
+
+</body></html>

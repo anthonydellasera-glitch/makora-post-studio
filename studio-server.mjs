@@ -73,6 +73,13 @@ const server = http.createServer(async (req, res) => {
       return;
     }
 
+    if (req.method === 'GET' && urlPath === '/calculadora') {
+      const html = fs.readFileSync(path.join(__dirname, 'calculadora.html'), 'utf8');
+      res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+      res.end(html);
+      return;
+    }
+
     if (req.method === 'GET' && urlPath.startsWith('/_job/')) {
       const id = urlPath.slice('/_job/'.length).replace('.html', '');
       const html = pendingRenders.get(id);

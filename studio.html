@@ -34,15 +34,26 @@
     border-bottom: 1px solid #E5EEF2;
   }
   .brand img { height: 40px; width: auto; }
-  .badge-studio {
-    background: #012345;
-    color: #10B981;
+  .nav-pills {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .nav-pill {
     font-family: 'Poppins', sans-serif;
     font-weight: 700;
-    font-size: 12px;
-    padding: 5px 12px;
+    font-size: 11.5px;
+    padding: 5px 11px;
     border-radius: 999px;
+    text-decoration: none;
+    background: #F2F8F7;
+    color: #012345;
   }
+  .nav-pill.active {
+    background: #012345;
+    color: #10B981;
+  }
+  .nav-pill:hover:not(.active) { background: #DFF5ED; }
   label {
     display: block;
     font-family: 'Poppins', sans-serif;
@@ -237,7 +248,10 @@
   <aside class="sidebar">
     <div class="brand">
       <img src="/plantillas/assets/logo-horizontal.png" alt="Makora">
-      <span class="badge-studio">POST STUDIO</span>
+      <div class="nav-pills">
+        <a class="nav-pill active" href="/">Post Studio</a>
+        <a class="nav-pill" href="/calculadora">Calculadora 3D</a>
+      </div>
     </div>
 
     <div>
