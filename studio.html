@@ -1,0 +1,569 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Makora Studio — Generador Rápido de Posts</title>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.js"></script>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: 'Open Sans', sans-serif;
+    background: #F2F8F7;
+    color: #012345;
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+  }
+  .sidebar {
+    width: 440px;
+    background: #FFFFFF;
+    border-right: 1px solid #D5E2E8;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    padding: 22px;
+    gap: 16px;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #E5EEF2;
+  }
+  .brand img { height: 40px; width: auto; }
+  .badge-studio {
+    background: #012345;
+    color: #10B981;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    font-size: 12px;
+    padding: 5px 12px;
+    border-radius: 999px;
+  }
+  label {
+    display: block;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    font-size: 12.5px;
+    margin-bottom: 5px;
+    color: #012345;
+  }
+  select, input[type="text"] {
+    width: 100%;
+    padding: 9px 12px;
+    border: 1.5px solid #D5E2E8;
+    border-radius: 10px;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 14px;
+    color: #012345;
+    background: #FFFFFF;
+  }
+  select:focus, input[type="text"]:focus {
+    outline: none;
+    border-color: #10B981;
+  }
+  .row-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .row-3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+  }
+  .color-field {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border: 1.5px solid #D5E2E8;
+    border-radius: 10px;
+    padding: 5px 8px;
+    background: #FFFFFF;
+  }
+  .color-field input[type="color"] {
+    width: 28px;
+    height: 28px;
+    border: none;
+    background: none;
+    padding: 0;
+    cursor: pointer;
+  }
+  .color-field span {
+    font-size: 12px;
+    font-weight: 600;
+    color: #4B5B6B;
+  }
+  .swatches {
+    display: flex;
+    gap: 6px;
+    margin-top: 6px;
+    align-items: center;
+  }
+  .swatch {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 1.5px solid #CBD5E1;
+    cursor: pointer;
+  }
+  .dropzone {
+    border: 2px dashed #10B981;
+    background: #F2F8F7;
+    border-radius: 14px;
+    padding: 14px;
+    text-align: center;
+    cursor: pointer;
+    font-size: 13px;
+    color: #4B5B6B;
+    transition: background 0.15s;
+  }
+  .dropzone.dragover { background: #DFF5ED; }
+  .thumbs-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 8px;
+    gap: 8px;
+  }
+  .thumbs {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .thumb-wrap {
+    position: relative;
+    width: 60px;
+    height: 60px;
+  }
+  .thumb {
+    width: 60px;
+    height: 60px;
+    border-radius: 10px;
+    object-fit: cover;
+    border: 2px solid #D5E2E8;
+    display: block;
+  }
+  .thumb-del {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: none;
+    background: #012345;
+    color: #FFFFFF;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+  }
+  .thumb-del:hover { background: #E11D48; }
+  .btn-clear {
+    background: #EEF3F6;
+    color: #012345;
+    border: none;
+    border-radius: 8px;
+    padding: 6px 10px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    font-size: 11.5px;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .btn-clear:hover { background: #DCE6EC; }
+  .btn-primary {
+    background: #10B981;
+    color: #012345;
+    border: none;
+    border-radius: 999px;
+    padding: 14px 20px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    cursor: pointer;
+    width: 100%;
+    transition: transform 0.1s, opacity 0.15s;
+  }
+  .btn-primary:hover { opacity: 0.92; }
+  .btn-primary:disabled { opacity: 0.55; cursor: wait; }
+  .status {
+    font-size: 12px;
+    color: #4B5B6B;
+    text-align: center;
+    min-height: 18px;
+  }
+
+  .preview-area {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 28px;
+    overflow: hidden;
+    position: relative;
+  }
+  .preview-meta {
+    margin-bottom: 12px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    color: #4B5B6B;
+  }
+  .frame-wrapper {
+    position: relative;
+    box-shadow: 0 24px 60px rgba(1, 35, 69, 0.18);
+    border-radius: 16px;
+    overflow: hidden;
+    background: #FFFFFF;
+  }
+  iframe {
+    border: none;
+    transform-origin: top left;
+    display: block;
+  }
+</style>
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="brand">
+      <img src="/plantillas/assets/logo-horizontal.png" alt="Makora">
+      <span class="badge-studio">POST STUDIO</span>
+    </div>
+
+    <div>
+      <label for="template">1 · Plantilla de Instagram</label>
+      <select id="template">
+        <option value="vitrina">Vitrina Pro — Comercial (1080×1080)</option>
+        <option value="cuadrado">Post Cuadrado — Limpio (1080×1080)</option>
+        <option value="vertical">Post Vertical — Impacto (1080×1350)</option>
+        <option value="story">Story / Reel — Zonas Seguras (1080×1920)</option>
+        <option value="coleccion">Colección Grid 2×2 — 4 Fotos (1080×1080)</option>
+      </select>
+    </div>
+
+    <div>
+      <label>2 · Sube o quita tus fotos (1 o hasta 4 para Grid)</label>
+      <div id="dropzone" class="dropzone">
+        Arrastra tus imágenes aquí o <b>haz clic para agregar</b>
+        <input id="fileInput" type="file" accept="image/*" multiple hidden>
+      </div>
+      <div id="thumbsBar" class="thumbs-bar" style="display:none">
+        <div id="thumbs" class="thumbs"></div>
+        <button id="clearImgsBtn" type="button" class="btn-clear">Quitar todas</button>
+      </div>
+    </div>
+
+    <div class="row-2">
+      <div>
+        <label for="fit">Ajuste de foto</label>
+        <select id="fit">
+          <option value="contain">Sin recortar (contain)</option>
+          <option value="cover">Llenar marco (cover)</option>
+        </select>
+      </div>
+      <div>
+        <label for="price">Precio / Oferta (vacío = ocultar)</label>
+        <input id="price" type="text" value="Desde $10" placeholder="Ej. $5.00 o 2x$15">
+      </div>
+    </div>
+
+    <div>
+      <label for="title">Título principal</label>
+      <input id="title" type="text" value="Llaveros">
+    </div>
+
+    <div>
+      <label for="subtitle">Subtítulo / Línea 2</label>
+      <input id="subtitle" type="text" value="Personalizados">
+    </div>
+
+    <div>
+      <label>Colores de texto</label>
+      <div class="row-3">
+        <div class="color-field" title="Color del título principal">
+          <input id="titleColor" type="color" value="#012345">
+          <span>Título</span>
+        </div>
+        <div class="color-field" title="Color del subtítulo o acento">
+          <input id="subtitleColor" type="color" value="#009496">
+          <span>Subtítulo</span>
+        </div>
+        <div class="color-field" title="Color de nota o contacto">
+          <input id="noteColor" type="color" value="#012345">
+          <span>Nota/Pie</span>
+        </div>
+      </div>
+      <div class="swatches">
+        <span style="font-size:11.5px;color:#4B5B6B">Paleta Makora (clic para Título):</span>
+        <button type="button" class="swatch" style="background:#012345" data-color="#012345" title="Azul noche"></button>
+        <button type="button" class="swatch" style="background:#FFFFFF" data-color="#FFFFFF" title="Blanco"></button>
+        <button type="button" class="swatch" style="background:#10B981" data-color="#10B981" title="Esmeralda"></button>
+        <button type="button" class="swatch" style="background:#009496" data-color="#009496" title="Verde azulado"></button>
+        <button type="button" class="swatch" style="background:#FFB020" data-color="#FFB020" title="Sol"></button>
+        <button type="button" class="swatch" style="background:#1E3A8A" data-color="#1E3A8A" title="Índigo"></button>
+      </div>
+    </div>
+
+    <div class="row-2">
+      <div>
+        <label for="tag">Etiqueta / Categoría</label>
+        <input id="tag" type="text" value="NUEVO">
+      </div>
+      <div>
+        <label for="cta">Botón CTA</label>
+        <input id="cta" type="text" value="Escríbenos por WhatsApp">
+      </div>
+    </div>
+
+    <div id="vitrinaExtras">
+      <label>Beneficios (Plantilla Vitrina)</label>
+      <div class="row-2" style="margin-bottom:8px">
+        <input id="feat1" type="text" value="Alta Calidad">
+        <input id="feat2" type="text" value="Diseños Personalizados">
+      </div>
+      <div class="row-2">
+        <input id="feat3" type="text" value="Ideal para Regalos">
+        <input id="note" type="text" value="Dale un toque único a tus ideas">
+      </div>
+    </div>
+
+    <button id="exportBtn" class="btn-primary">Descargar PNG listo para subir</button>
+    <div id="status" class="status"></div>
+  </aside>
+
+  <main class="preview-area">
+    <div id="previewMeta" class="preview-meta">Vista previa · 1080 × 1080 px</div>
+    <div id="frameWrapper" class="frame-wrapper">
+      <iframe id="previewFrame"></iframe>
+    </div>
+  </main>
+
+<script>
+  const SPECS = {
+    vitrina:   { url: '/plantillas/post-vitrina-pro.html',       w: 1080, h: 1080, defaults: { titleColor: '#012345', subtitleColor: '#009496', noteColor: '#012345' } },
+    cuadrado:  { url: '/plantillas/post-cuadrado-producto.html', w: 1080, h: 1080, defaults: { titleColor: '#012345', subtitleColor: '#4B5B6B', noteColor: '#4B5B6B' } },
+    vertical:  { url: '/plantillas/post-vertical-producto.html', w: 1080, h: 1350, defaults: { titleColor: '#FFFFFF', subtitleColor: '#D5E2E8', noteColor: '#FFFFFF' } },
+    story:     { url: '/plantillas/story-promo.html',            w: 1080, h: 1920, defaults: { titleColor: '#FFFFFF', subtitleColor: '#E2EEFA', noteColor: '#FFFFFF' } },
+    coleccion: { url: '/plantillas/post-coleccion-grid.html',    w: 1080, h: 1080, defaults: { titleColor: '#FFFFFF', subtitleColor: '#FFFFFF', noteColor: '#FFFFFF' } },
+  };
+
+  let uploadedImages = [];
+
+  const el = (id) => document.getElementById(id);
+  const frame = el('previewFrame');
+  const wrapper = el('frameWrapper');
+
+  function getFormData() {
+    return {
+      title: el('title').value,
+      titleLine1: el('title').value,
+      titleLine2: el('subtitle').value,
+      subtitle: el('subtitle').value,
+      tag: el('tag').value,
+      price: el('price').value,
+      cta: el('cta').value,
+      fit: el('fit').value,
+      feat1: el('feat1').value,
+      feat2: el('feat2').value,
+      feat3: el('feat3').value,
+      note: el('note').value,
+      titleColor: el('titleColor').value,
+      subtitleColor: el('subtitleColor').value,
+      accentColor: el('subtitleColor').value,
+      noteColor: el('noteColor').value,
+      contactColor: el('noteColor').value,
+      image: uploadedImages[0] || '',
+      images: uploadedImages,
+    };
+  }
+
+  function renderThumbs() {
+    const bar = el('thumbsBar');
+    const container = el('thumbs');
+    container.innerHTML = '';
+    if (uploadedImages.length === 0) {
+      bar.style.display = 'none';
+      return;
+    }
+    bar.style.display = 'flex';
+    uploadedImages.forEach((src, idx) => {
+      const wrap = document.createElement('div');
+      wrap.className = 'thumb-wrap';
+      const img = document.createElement('img');
+      img.src = src;
+      img.className = 'thumb';
+      const del = document.createElement('button');
+      del.type = 'button';
+      del.className = 'thumb-del';
+      del.textContent = '×';
+      del.title = 'Quitar esta imagen';
+      del.addEventListener('click', () => {
+        uploadedImages.splice(idx, 1);
+        renderThumbs();
+        pushDataToFrame();
+      });
+      wrap.appendChild(img);
+      wrap.appendChild(del);
+      container.appendChild(wrap);
+    });
+  }
+
+  function resizeFrame() {
+    const spec = SPECS[el('template').value];
+    const area = document.querySelector('.preview-area');
+    const maxW = area.clientWidth - 64;
+    const maxH = area.clientHeight - 80;
+    const scale = Math.min(maxW / spec.w, maxH / spec.h, 1);
+    wrapper.style.width = Math.round(spec.w * scale) + 'px';
+    wrapper.style.height = Math.round(spec.h * scale) + 'px';
+    frame.style.width = spec.w + 'px';
+    frame.style.height = spec.h + 'px';
+    frame.style.transform = `scale(${scale})`;
+    el('previewMeta').textContent = `Vista previa · ${spec.w} × ${spec.h} px`;
+  }
+
+  function pushDataToFrame() {
+    if (frame.contentWindow) {
+      frame.contentWindow.postMessage({ type: 'MAKORA_DATA', payload: getFormData() }, '*');
+    }
+  }
+
+  function loadTemplate() {
+    const tpl = el('template').value;
+    const spec = SPECS[tpl];
+    el('vitrinaExtras').style.display = tpl === 'vitrina' ? 'block' : 'none';
+    el('titleColor').value = spec.defaults.titleColor;
+    el('subtitleColor').value = spec.defaults.subtitleColor;
+    el('noteColor').value = spec.defaults.noteColor;
+    frame.src = spec.url;
+    resizeFrame();
+  }
+
+  frame.addEventListener('load', pushDataToFrame);
+  window.addEventListener('resize', resizeFrame);
+
+  ['title', 'subtitle', 'tag', 'price', 'cta', 'fit', 'feat1', 'feat2', 'feat3', 'note', 'titleColor', 'subtitleColor', 'noteColor'].forEach((id) => {
+    el(id).addEventListener('input', pushDataToFrame);
+    el(id).addEventListener('change', pushDataToFrame);
+  });
+  el('template').addEventListener('change', loadTemplate);
+
+  document.querySelectorAll('.swatch').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      el('titleColor').value = btn.dataset.color;
+      pushDataToFrame();
+    });
+  });
+
+  function handleFiles(files) {
+    const list = Array.from(files);
+    const spaceLeft = 4 - uploadedImages.length;
+    const toAdd = spaceLeft > 0 ? list.slice(0, spaceLeft) : list.slice(0, 4);
+    if (spaceLeft <= 0) uploadedImages = [];
+    let loaded = 0;
+    toAdd.forEach((file) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        uploadedImages.push(e.target.result);
+        loaded++;
+        if (loaded === toAdd.length) {
+          renderThumbs();
+          pushDataToFrame();
+        }
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  el('clearImgsBtn').addEventListener('click', () => {
+    uploadedImages = [];
+    el('fileInput').value = '';
+    renderThumbs();
+    pushDataToFrame();
+  });
+
+  const dz = el('dropzone');
+  dz.addEventListener('click', () => el('fileInput').click());
+  el('fileInput').addEventListener('change', (e) => {
+    if (e.target.files.length) handleFiles(e.target.files);
+    e.target.value = '';
+  });
+  dz.addEventListener('dragover', (e) => { e.preventDefault(); dz.classList.add('dragover'); });
+  dz.addEventListener('dragleave', () => dz.classList.remove('dragover'));
+  dz.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dz.classList.remove('dragover');
+    if (e.dataTransfer.files.length) handleFiles(e.dataTransfer.files);
+  });
+
+  el('exportBtn').addEventListener('click', async () => {
+    const btn = el('exportBtn');
+    const st = el('status');
+    const tpl = el('template').value;
+    const spec = SPECS[tpl];
+    btn.disabled = true;
+    st.textContent = 'Renderizando PNG en alta calidad...';
+    try {
+      const isLocalServer = location.hostname === '127.0.0.1' || location.hostname === 'localhost';
+      if (isLocalServer) {
+        try {
+          const resp = await fetch('/api/render', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ template: tpl, data: getFormData() }),
+          });
+          if (resp.ok) {
+            const blob = await resp.blob();
+            const savedPath = resp.headers.get('X-Saved-Path') || 'salida/';
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `makora-${tpl}-${Date.now()}.png`;
+            a.click();
+            st.textContent = `✔ Listo y guardado en ${savedPath}`;
+            return;
+          }
+        } catch (_) {
+          // Fallback al renderizado directo en el navegador
+        }
+      }
+
+      if (!window.htmlToImage) {
+        throw new Error('No se pudo cargar el motor de exportación en el navegador.');
+      }
+      const doc = frame.contentDocument;
+      const canvasNode = doc && doc.querySelector('.canvas');
+      if (!canvasNode) throw new Error('No se encontró el lienzo de la plantilla.');
+      if (doc.fonts && doc.fonts.ready) await doc.fonts.ready;
+
+      const dataUrl = await window.htmlToImage.toPng(canvasNode, {
+        width: spec.w,
+        height: spec.h,
+        pixelRatio: 1,
+        cacheBust: true,
+      });
+      const a = document.createElement('a');
+      a.href = dataUrl;
+      a.download = `makora-${tpl}-${Date.now()}.png`;
+      a.click();
+      st.textContent = `✔ PNG (${spec.w}×${spec.h}) descargado`;
+    } catch (err) {
+      st.textContent = 'Error: ' + err.message;
+    } finally {
+      btn.disabled = false;
+    }
+  });
+
+  loadTemplate();
+</script>
+</body>
+</html>

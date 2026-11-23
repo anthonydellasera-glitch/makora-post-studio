@@ -1,0 +1,400 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Post Vitrina Pro Makora (1080x1080)</title>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Open+Sans:wght@400;600;700&family=Pacifico&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; width: 1080px; height: 1080px; overflow: hidden; background: #FFFFFF; }
+  .canvas {
+    width: 1080px;
+    height: 1080px;
+    position: relative;
+    overflow: hidden;
+    background: radial-gradient(circle at 60% 48%, #FFFFFF 0%, #F2F8F7 100%);
+    font-family: 'Open Sans', sans-serif;
+    color: #012345;
+  }
+
+  /* Header */
+  .header {
+    position: absolute;
+    left: 56px;
+    right: 56px;
+    top: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    z-index: 4;
+  }
+  .header-logo {
+    width: 410px;
+    height: auto;
+    display: block;
+    flex-shrink: 0;
+  }
+  .divider {
+    width: 3px;
+    height: 120px;
+    background: #009496;
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+  .header-title-box {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  .title-line1 {
+    font-family: 'Caveat', cursive;
+    font-weight: 700;
+    font-size: 74px;
+    line-height: 0.9;
+    color: #012345;
+  }
+  .title-line2 {
+    font-family: 'Caveat', cursive;
+    font-weight: 700;
+    font-size: 72px;
+    line-height: 0.95;
+    color: #009496;
+  }
+  .title-swoosh {
+    width: 340px;
+    height: 22px;
+    margin-top: 4px;
+  }
+
+  /* Left feature badges */
+  .features {
+    position: absolute;
+    left: 48px;
+    top: 250px;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    z-index: 4;
+  }
+  .feat-circle {
+    width: 172px;
+    height: 172px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.94);
+    border: 3px solid #10B981;
+    box-shadow: 0 10px 26px rgba(1, 35, 69, 0.08);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 14px;
+    text-align: center;
+    gap: 8px;
+  }
+  .feat-circle svg {
+    width: 52px;
+    height: 52px;
+    flex-shrink: 0;
+  }
+  .feat-label {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    font-size: 18px;
+    line-height: 1.15;
+    color: #012345;
+  }
+
+  /* Center-right product stage */
+  .stage {
+    position: absolute;
+    left: 245px;
+    top: 215px;
+    right: 48px;
+    bottom: 185px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+  }
+  .stage img {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    filter: drop-shadow(0 20px 28px rgba(1, 35, 69, 0.18));
+    border-radius: 28px;
+  }
+  .stage.cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 36px;
+    box-shadow: 0 22px 46px rgba(1, 35, 69, 0.16);
+  }
+  .stage-placeholder {
+    width: 90%;
+    height: 85%;
+    border: 4px dashed #10B981;
+    border-radius: 36px;
+    background: rgba(255,255,255,0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    font-size: 28px;
+    color: #4B5B6B;
+    text-align: center;
+    padding: 32px;
+  }
+
+  /* Price badge */
+  .price-badge {
+    position: absolute;
+    right: 52px;
+    top: 230px;
+    background: #FFB020;
+    color: #012345;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 800;
+    font-size: 36px;
+    border-radius: 999px;
+    padding: 12px 30px;
+    transform: rotate(5deg);
+    box-shadow: 0 10px 24px rgba(1,35,69,0.18);
+    z-index: 5;
+  }
+
+  /* Accent handwritten note */
+  .note-box {
+    position: absolute;
+    right: 46px;
+    bottom: 195px;
+    text-align: center;
+    z-index: 4;
+    transform: rotate(-4deg);
+  }
+  .note-burst {
+    width: 90px;
+    height: 36px;
+    margin: 0 auto 2px;
+    display: block;
+  }
+  .note-text {
+    font-family: 'Caveat', cursive;
+    font-weight: 700;
+    font-size: 40px;
+    line-height: 0.95;
+    color: #012345;
+    max-width: 240px;
+  }
+  .note-underline {
+    width: 190px;
+    height: 14px;
+    margin: 4px auto 0;
+    display: block;
+  }
+
+  /* Wave footer */
+  .footer-wave {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 185px;
+    z-index: 3;
+    pointer-events: none;
+  }
+  .footer-content {
+    position: absolute;
+    left: 52px;
+    right: 44px;
+    bottom: 24px;
+    height: 96px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 5;
+  }
+  .socials {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    color: #FFFFFF;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    font-size: 36px;
+  }
+  .social-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .social-sep {
+    width: 3px;
+    height: 44px;
+    background: rgba(255,255,255,0.45);
+  }
+  .footer-cube-badge {
+    background: #FFFFFF;
+    border-radius: 20px;
+    padding: 10px;
+    box-shadow: 0 6px 14px rgba(0,0,0,0.28);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .footer-cube {
+    width: 68px;
+    height: auto;
+    display: block;
+  }
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+<div class="canvas">
+  <div class="header">
+    <img src="./assets/logo-horizontal.png" alt="Makora" class="header-logo">
+    <div class="divider"></div>
+    <div class="header-title-box">
+      <div id="titleLine1" class="title-line1">Productos</div>
+      <div id="titleLine2" class="title-line2">Personalizados</div>
+      <svg class="title-swoosh" viewBox="0 0 340 22" fill="none">
+        <path d="M8 15C95 3 230 2 332 10" stroke="#10B981" stroke-width="7" stroke-linecap="round"/>
+      </svg>
+    </div>
+  </div>
+
+  <div class="features">
+    <div class="feat-circle">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#012345" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M6 3h12l4 6-10 13L2 9z"/>
+        <path d="M2 9h20"/>
+        <path d="M12 22L8 9l4-6 4 6z"/>
+      </svg>
+      <div id="feat1" class="feat-label">Alta Calidad</div>
+    </div>
+    <div class="feat-circle">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#012345" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="3"/>
+        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9c.26.6.79 1 1.51 1H21a2 2 0 1 1 0 4h-.09c-.72 0-1.25.4-1.51 1z"/>
+      </svg>
+      <div id="feat2" class="feat-label">Diseños Personalizados</div>
+    </div>
+    <div class="feat-circle">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#012345" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="8" width="18" height="4" rx="1"/>
+        <path d="M12 8v13"/>
+        <path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/>
+        <path d="M7.5 8a2.5 2.5 0 0 1 0-5A4.8 8 0 0 1 12 8a4.8 8 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5"/>
+      </svg>
+      <div id="feat3" class="feat-label">Ideal para Regalos</div>
+    </div>
+  </div>
+
+  <div id="stage" class="stage">
+    <img id="productImg" src="" alt="Producto Makora" class="hidden">
+    <div id="placeholder" class="stage-placeholder">Coloca aquí la foto de tu producto</div>
+  </div>
+
+  <div id="price" class="price-badge hidden"></div>
+
+  <div id="noteBox" class="note-box">
+    <svg class="note-burst" viewBox="0 0 90 36" fill="none">
+      <path d="M22 30L10 12M45 28V6M68 30L80 12" stroke="#10B981" stroke-width="6" stroke-linecap="round"/>
+    </svg>
+    <div id="noteText" class="note-text">Dale un toque único a tus ideas</div>
+    <svg class="note-underline" viewBox="0 0 190 14" fill="none">
+      <path d="M5 10C60 3 130 3 185 8" stroke="#10B981" stroke-width="6" stroke-linecap="round"/>
+    </svg>
+  </div>
+
+  <svg class="footer-wave" viewBox="0 0 1080 185" preserveAspectRatio="none">
+    <path d="M0 34 C 310 -8, 690 78, 1080 10 L1080 185 L0 185 Z" fill="#10B981"/>
+    <path d="M0 50 C 330 6, 700 88, 1080 22 L1080 185 L0 185 Z" fill="#012345"/>
+  </svg>
+
+  <div class="footer-content">
+    <div class="socials">
+      <div class="social-item">
+        <svg width="52" height="52" viewBox="0 0 48 48" fill="none">
+          <circle cx="24" cy="24" r="22" fill="#25D366" stroke="#FFFFFF" stroke-width="2.5"/>
+          <path d="M32.5 28.4c-.4-.2-2.4-1.2-2.8-1.3-.4-.2-.7-.2-1 .2-.3.4-1.1 1.3-1.3 1.6-.2.3-.5.3-.9.1-2.5-1.2-4.1-2.2-5.7-5-.4-.7.4-.7 1.2-2.3.1-.3.1-.5 0-.8-.1-.2-.9-2.2-1.3-3-.3-.8-.7-.7-1-.7h-.8c-.3 0-.8.1-1.2.6-.4.4-1.6 1.5-1.6 3.7s1.6 4.3 1.8 4.6c.2.3 3.1 4.8 7.6 6.7 2.8 1.2 3.9 1.3 5.3 1.1.9-.1 2.4-1 2.7-1.9.3-.9.3-1.7.2-1.9-.1-.2-.4-.3-.8-.5z" fill="#FFFFFF"/>
+        </svg>
+        <span id="whatsapp">6837-4844</span>
+      </div>
+      <div class="social-sep"></div>
+      <div class="social-item">
+        <svg width="50" height="50" viewBox="0 0 48 48" fill="none">
+          <rect x="6" y="6" width="36" height="36" rx="10" stroke="#FFFFFF" stroke-width="3.5"/>
+          <circle cx="24" cy="24" r="8.5" stroke="#FFFFFF" stroke-width="3.5"/>
+          <circle cx="34.5" cy="13.5" r="2.5" fill="#FFFFFF"/>
+        </svg>
+        <span id="instagram">Makorapty</span>
+      </div>
+    </div>
+    <div class="footer-cube-badge">
+      <img src="./assets/logo-cubo.png" alt="Cubo Makora" class="footer-cube">
+    </div>
+  </div>
+</div>
+
+<script>
+  function applyData(d) {
+    if (!d) return;
+    const setText = (id, val, hideIfEmpty = false) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      if (val !== undefined && val !== null && String(val).trim() !== '') {
+        el.textContent = val;
+        el.classList.remove('hidden');
+      } else if (hideIfEmpty) {
+        el.classList.add('hidden');
+      }
+    };
+    setText('titleLine1', d.titleLine1 || d.title);
+    setText('titleLine2', d.titleLine2 || d.subtitle || '');
+    setText('feat1', d.feat1);
+    setText('feat2', d.feat2);
+    setText('feat3', d.feat3);
+    setText('price', d.price, true);
+    setText('noteText', d.note, false);
+    if (d.hideNote) document.getElementById('noteBox').classList.add('hidden');
+    else document.getElementById('noteBox').classList.remove('hidden');
+    setText('whatsapp', d.whatsapp);
+    setText('instagram', d.instagram);
+
+    if (d.titleColor) document.getElementById('titleLine1').style.color = d.titleColor;
+    if (d.subtitleColor) document.getElementById('titleLine2').style.color = d.subtitleColor;
+    if (d.noteColor) document.getElementById('noteText').style.color = d.noteColor;
+
+    const img = document.getElementById('productImg');
+    const ph = document.getElementById('placeholder');
+    const stage = document.getElementById('stage');
+    const src = d.image || (Array.isArray(d.images) ? d.images[0] : '');
+    if (src) {
+      img.src = src;
+      img.classList.remove('hidden');
+      ph.classList.add('hidden');
+    } else {
+      img.removeAttribute('src');
+      img.classList.add('hidden');
+      ph.classList.remove('hidden');
+    }
+    if (d.fit === 'cover') stage.classList.add('cover');
+    else stage.classList.remove('cover');
+  }
+
+  window.applyMakoraData = applyData;
+  if (window.__MAKORA_DATA__) applyData(window.__MAKORA_DATA__);
+  window.addEventListener('message', (e) => {
+    if (e.data && e.data.type === 'MAKORA_DATA') applyData(e.data.payload);
+  });
+</script>
+</body>
+</html>

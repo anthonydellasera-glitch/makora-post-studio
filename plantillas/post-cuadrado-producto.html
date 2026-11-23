@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Post Cuadrado Makora (1080x1080)</title>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; width: 1080px; height: 1080px; overflow: hidden; background: #F2F8F7; }
+  .canvas {
+    width: 1080px;
+    height: 1080px;
+    position: relative;
+    overflow: hidden;
+    background: #F2F8F7;
+    font-family: 'Open Sans', sans-serif;
+    color: #012345;
+  }
+  .shape-1 { position: absolute; right: -130px; top: -130px; width: 520px; height: 520px; border-radius: 120px; background: #10B981; transform: rotate(18deg); }
+  .shape-2 { position: absolute; right: 150px; top: -210px; width: 360px; height: 360px; border-radius: 90px; background: #1E3A8A; transform: rotate(18deg); }
+  .shape-3 { position: absolute; right: -190px; top: 270px; width: 360px; height: 360px; border-radius: 90px; background: #009496; transform: rotate(18deg); }
+
+  .safe {
+    position: absolute;
+    left: 80px; top: 80px; right: 80px; bottom: 80px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .top-row {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    max-width: 580px;
+    z-index: 2;
+  }
+  .tag {
+    align-self: flex-start;
+    background: #FFB020;
+    color: #012345;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    font-size: 28px;
+    border-radius: 999px;
+    padding: 8px 26px;
+    box-shadow: 0 8px 20px rgba(1,35,69,0.08);
+  }
+  .title {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 800;
+    font-size: 74px;
+    line-height: 1.04;
+    letter-spacing: -1px;
+    color: #012345;
+  }
+  .subtitle {
+    font-size: 30px;
+    line-height: 1.35;
+    color: #4B5B6B;
+    font-weight: 600;
+  }
+
+  .photo-wrap {
+    position: relative;
+    width: 100%;
+    height: 430px;
+    border-radius: 36px;
+    background: #FFFFFF;
+    border: 4px solid #FFFFFF;
+    box-shadow: 0 24px 50px rgba(1, 35, 69, 0.14);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+  }
+  .photo-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .photo-wrap.contain img {
+    object-fit: contain;
+    padding: 18px;
+  }
+  .photo-placeholder {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    font-size: 30px;
+    color: #4B5B6B;
+    text-align: center;
+    padding: 20px;
+  }
+  .price-badge {
+    position: absolute;
+    right: 24px;
+    top: 24px;
+    background: #FFB020;
+    color: #012345;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 800;
+    font-size: 36px;
+    border-radius: 999px;
+    padding: 12px 30px;
+    transform: rotate(4deg);
+    box-shadow: 0 10px 24px rgba(1,35,69,0.18);
+    z-index: 3;
+  }
+
+  .footer {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+    z-index: 2;
+  }
+  .cta-col {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .cta-btn {
+    background: #10B981;
+    color: #012345;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    font-size: 32px;
+    border-radius: 999px;
+    padding: 16px 36px;
+    align-self: flex-start;
+  }
+  .contact {
+    font-size: 28px;
+    font-weight: 600;
+    color: #4B5B6B;
+  }
+  .logo {
+    width: 270px;
+    height: auto;
+    display: block;
+  }
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+<div class="canvas">
+  <div class="shape-1"></div>
+  <div class="shape-2"></div>
+  <div class="shape-3"></div>
+
+  <div class="safe">
+    <div class="top-row">
+      <div id="tag" class="tag">NUEVO</div>
+      <div id="title" class="title">Ideas que toman forma</div>
+      <div id="subtitle" class="subtitle">Regalos y productos personalizados hechos en Panamá</div>
+    </div>
+
+    <div id="photoWrap" class="photo-wrap">
+      <img id="productImg" src="" alt="Producto Makora" class="hidden">
+      <div id="placeholder" class="photo-placeholder">Foto del producto (1080×1080)</div>
+      <div id="price" class="price-badge hidden"></div>
+    </div>
+
+    <div class="footer">
+      <div class="cta-col">
+        <div id="cta" class="cta-btn">Escríbenos por WhatsApp</div>
+        <div id="contact" class="contact">@makorapty · 6837-4844</div>
+      </div>
+      <img src="./assets/logo-horizontal.png" alt="Logo Makora" class="logo">
+    </div>
+  </div>
+</div>
+
+<script>
+  function applyData(d) {
+    if (!d) return;
+    const setText = (id, val, hideIfEmpty = false) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      if (val !== undefined && val !== null && String(val).trim() !== '') {
+        el.textContent = val;
+        el.classList.remove('hidden');
+      } else if (hideIfEmpty) {
+        el.classList.add('hidden');
+      }
+    };
+    setText('tag', d.tag, true);
+    setText('title', d.title);
+    setText('subtitle', d.subtitle, true);
+    setText('price', d.price, true);
+    setText('cta', d.cta);
+    setText('contact', d.contact);
+
+    if (d.titleColor) document.getElementById('title').style.color = d.titleColor;
+    if (d.subtitleColor) document.getElementById('subtitle').style.color = d.subtitleColor;
+    if (d.contactColor) document.getElementById('contact').style.color = d.contactColor;
+
+    const img = document.getElementById('productImg');
+    const ph = document.getElementById('placeholder');
+    const wrap = document.getElementById('photoWrap');
+    const src = d.image || (Array.isArray(d.images) ? d.images[0] : '');
+    if (src) {
+      img.src = src;
+      img.classList.remove('hidden');
+      ph.classList.add('hidden');
+    } else {
+      img.removeAttribute('src');
+      img.classList.add('hidden');
+      ph.classList.remove('hidden');
+    }
+    if (d.fit === 'contain') wrap.classList.add('contain');
+    else wrap.classList.remove('contain');
+  }
+
+  window.applyMakoraData = applyData;
+  if (window.__MAKORA_DATA__) applyData(window.__MAKORA_DATA__);
+  window.addEventListener('message', (e) => {
+    if (e.data && e.data.type === 'MAKORA_DATA') applyData(e.data.payload);
+  });
+</script>
+</body>
+</html>
